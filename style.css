@@ -1,170 +1,137 @@
 
-const inicio = document.getElementById("inicio");
-const jogo = document.getElementById("jogo");
-const fim = document.getElementById("fim");
-const tabuleiro = document.getElementById("tabuleiro");
-const mensagem = document.getElementById("mensagem");
-
-const pontosTexto = document.getElementById("pontos");
-const acertosTexto = document.getElementById("acertos");
-const errosTexto = document.getElementById("erros");
-
-const perguntas = [
-  { par: "matematica", emoji: "➕", texto: "Matemática" },
-  { par: "portugues", emoji: "📚", texto: "Português" },
-  { par: "ciencias", emoji: "🔬", texto: "Ciências" },
-  { par: "historia", emoji: "🏛️", texto: "História" },
-  { par: "geografia", emoji: "🌎", texto: "Geografia" },
-  { par: "arte", emoji: "🎨", texto: "Arte" },
-  { par: "ingles", emoji: "🔤", texto: "Inglês" },
-  { par: "educacao", emoji: "⚽", texto: "Educação Física" }
-];
-
-let primeira = null;
-let segunda = null;
-let bloqueado = false;
-let pontos = 0;
-let acertos = 0;
-let erros = 0;
-let paresEncontrados = 0;
-let rodada = 0;
-let temporizador;
-
-document.getElementById("iniciar").addEventListener("click", iniciar);
-document.getElementById("reiniciar").addEventListener("click", iniciar);
-document.getElementById("jogarNovamente").addEventListener("click", iniciar);
-
-function iniciar() {
-  clearTimeout(temporizador);
-  rodada++;
-
-  primeira = null;
-  segunda = null;
-  bloqueado = false;
-  pontos = 0;
-  acertos = 0;
-  erros = 0;
-  paresEncontrados = 0;
-
-  atualizarPlacar();
-
-  inicio.classList.add("escondido");
-  fim.classList.add("escondido");
-  jogo.classList.remove("escondido");
-
-  mensagem.textContent =
-    "Encontre os pares de cartas iguais!";
-
-  tabuleiro.innerHTML = "";
-
-  const cartas = [...perguntas, ...perguntas]
-    .sort(() => Math.random() - 0.5);
-
-  cartas.forEach((item) => {
-    const carta = document.createElement("button");
-
-    carta.className = "carta";
-    carta.textContent = "❓";
-    carta.dataset.par = item.par;
-    carta.dataset.emoji = item.emoji;
-    carta.dataset.texto = item.texto;
-    carta.setAttribute("aria-label", "Carta fechada");
-
-    carta.addEventListener("click", () => virarCarta(carta));
-
-    tabuleiro.appendChild(carta);
-  });
+* {
+  box-sizing: border-box;
 }
 
-function virarCarta(carta) {
-  if (
-    bloqueado ||
-    carta.classList.contains("aberta") ||
-    carta.classList.contains("certa")
-  ) {
-    return;
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+  color: #292344;
+  padding: 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+header {
+  color: white;
+  text-shadow: 1px 2px 4px #574477;
+  margin-bottom: 25px;
+}
+
+h1 {
+  font-size: clamp(2rem, 6vw, 3rem);
+  margin-bottom: 8px;
+}
+
+.painel {
+  background: white;
+  padding: 30px 20px;
+  border-radius: 22px;
+  box-shadow: 0 8px 20px #59447740;
+}
+
+button {
+  background: #ffca3a;
+  color: #33264d;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 22px;
+  margin: 12px 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+
+button:hover {
+  background: #ffb703;
+  transform: scale(1.04);
+}
+
+.escondido {
+  display: none !important;
+}
+
+.pontuacao {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.pontuacao span {
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 3px 8px #00000012;
+}
+
+#mensagem {
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.tabuleiro {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 20px auto;
+}
+
+.carta {
+  min-height: 105px;
+  padding: 8px;
+  background: #6c63ff;
+  color: white;
+  border: 3px solid white;
+  border-radius: 16px;
+  font-size: 2rem;
+  box-shadow: 0 4px 7px #00000020;
+  overflow-wrap: anywhere;
+}
+
+.carta.aberta {
+  background: #ffffff;
+  color: #30234a;
+  border-color: #6c63ff;
+}
+
+.carta.certa {
+  background: #b7f7c1;
+  color: #174b2a;
+  border-color: #42b963;
+  cursor: default;
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 12px;
   }
 
-  carta.classList.add("aberta");
-  carta.textContent = carta.dataset.emoji;
-  carta.setAttribute("aria-label", carta.dataset.texto);
-
-  if (!primeira) {
-    primeira = carta;
-    mensagem.textContent = "Escolha mais uma carta!";
-    return;
+  .tabuleiro {
+    gap: 6px;
   }
 
-  segunda = carta;
+  .carta {
+    min-height: 78px;
+    font-size: 1.5rem;
+    padding: 4px;
+  }
 
-  if (primeira.dataset.par === segunda.dataset.par) {
-    primeira.classList.add("certa");
-    segunda.classList.add("certa");
+  .pontuacao {
+    gap: 6px;
+  }
 
-    primeira.classList.remove("aberta");
-    segunda.classList.remove("aberta");
-
-    pontos += 10;
-    acertos++;
-    paresEncontrados++;
-
-    mensagem.textContent = "🎉 Muito bem! Você encontrou um par!";
-    primeira = null;
-    segunda = null;
-
-    atualizarPlacar();
-
-    if (paresEncontrados === perguntas.length) {
-      const rodadaAtual = rodada;
-
-      temporizador = setTimeout(() => {
-        if (rodadaAtual === rodada) finalizar();
-      }, 700);
-    }
-  } else {
-    erros++;
-    pontos = Math.max(0, pontos - 2);
-    bloqueado = true;
-
-    mensagem.textContent = "Ops! Tente novamente! 💪";
-    atualizarPlacar();
-
-    const rodadaAtual = rodada;
-
-    temporizador = setTimeout(() => {
-      if (rodadaAtual !== rodada) return;
-
-      primeira.classList.remove("aberta");
-      segunda.classList.remove("aberta");
-
-      primeira.textContent = "❓";
-      segunda.textContent = "❓";
-
-      primeira.setAttribute("aria-label", "Carta fechada");
-      segunda.setAttribute("aria-label", "Carta fechada");
-
-      primeira = null;
-      segunda = null;
-      bloqueado = false;
-
-      mensagem.textContent = "Escolha duas cartas!";
-    }, 900);
+  .pontuacao span {
+    padding: 9px;
+    font-size: 0.9rem;
   }
 }
-
-function atualizarPlacar() {
-  pontosTexto.textContent = pontos;
-  acertosTexto.textContent = acertos;
-  errosTexto.textContent = erros;
-}
-
-function finalizar() {
-  jogo.classList.add("escondido");
-  fim.classList.remove("escondido");
-
-  document.getElementById("resultado").textContent =
-    `Você encontrou todos os ${perguntas.length} pares! ` +
-    `Sua pontuação foi ${pontos} pontos, com ${acertos} acertos ` +
-    `e ${erros} erros. Parabéns pelo esforço! 🌟`;
-}
-
