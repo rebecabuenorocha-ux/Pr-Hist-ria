@@ -1,1 +1,45 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogo da Memória Educativo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>🧠 Jogo da Memória</h1>
+      <p>Aprender pode ser muito divertido!</p>
+    </header>
+
+    <section id="inicio" class="painel">
+      <h2>🎮 Vamos jogar?</h2>
+      <p>Encontre os pares de cartas e teste seus conhecimentos!</p>
+      <button id="iniciar">Começar o jogo 🚀</button>
+    </section>
+
+    <section id="jogo" class="escondido">
+      <div class="pontuacao">
+        <span>⭐ Pontos: <b id="pontos">0</b></span>
+        <span>✅ Acertos: <b id="acertos">0</b></span>
+        <span>❌ Erros: <b id="erros">0</b></span>
+      </div>
+
+      <p id="mensagem">Clique em duas cartas para encontrar um par!</p>
+      <div id="tabuleiro" class="tabuleiro"></div>
+      <button id="reiniciar">🔄 Reiniciar</button>
+    </section>
+
+    <section id="fim" class="painel escondido">
+      <h2>🏆 Parabéns!</h2>
+      <p id="resultado"></p>
+      <button id="jogarNovamente">Jogar novamente 🎮</button>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
